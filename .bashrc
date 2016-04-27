@@ -23,6 +23,17 @@ esac
 # Let opam set configure the PATH for OCaml
 eval $(opam config env)
 
+# Add recent GHC for Ubuntu and cabal
+PATH="/opt/cabal/1.22/bin:${PATH}"
+#PATH="/opt/ghc/7.10.3/bin:${PATH}"
+PATH="~/.local/bin:${PATH}"
+
+# Add erlang libaries
+export ERL_LIBS="~/.erl_libs/jiffy"
+
+# Add JS linting for vim -- currently installed globally...
+#PATH="$(npm bin):${PATH}"
+
 if [[ -x /usr/bin/lesspipe ]]; then
   eval "$(SHELL=/bin/sh lesspipe)"
 fi
@@ -202,7 +213,11 @@ date
 echo -e "\n"
 echo -e "${BRed}Hello, Dave. You're looking well today.${NC}\n"
 if [[ -x /usr/games/fortune ]]; then
-  /usr/games/fortune -s
+  if [[ -x /usr/games/cowsay ]]; then
+    fortune -s | cowsay
+  else
+    /usr/games/fortune -s
+  fi
 elif [[ -x /usr/local/bin/fortune ]]; then
   /usr/local/bin/fortune -s
 fi
@@ -261,7 +276,7 @@ fi
 # Test user type:
 if [[ ${USER} == "root" ]]; then
     SU=${Red}           # User is root.
-elif [[ ${USER} != $(logname) ]]; then
+elif [[ ${USER} != $(whoami) ]]; then
     SU=${BRed}          # User is not login user.
 else
     SU=${BCyan}         # User is normal (well ... most of us are).
@@ -354,12 +369,12 @@ case ${TERM} in
         PS1="\[\$(load_color)\][\A\[${NC}\] "
         # Time of day (with load info):
         PS1="\[\$(load_color)\][\A\[${NC}\] "
-        # User@Host (with connection type info):
-        PS1=${PS1}"\[${SU}\]\u\[${NC}\]@\[${CNX}\]\h\[${NC}\] "
         # PWD (with 'disk space' info):
         PS1=${PS1}"\[\$(disk_color)\]\W]\[${NC}\] "
         # Prompt (with 'job' info):
-        PS1=${PS1}"\[\$(job_color)\]$\[${NC}\] "
+        PS1=${PS1}"\[\$(job_color)\]\[${NC}\]"
+        # User@Host (with connection type info):
+        PS1=${PS1}"\n\[${SU}\]\u\[${NC}\]@\[${CNX}\]\h\[${NC}\] $ "
         # Set title of current xterm:
         PS1=${PS1}"\[\e]0;[\u@\h] \w\a\]"
         ;;
@@ -589,3 +604,5 @@ esac
 if [[ -f ~/.bash_aliases ]]; then
   . ~/.bash_aliases
 fi
+
+export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"

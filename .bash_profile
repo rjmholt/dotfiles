@@ -1,3 +1,5 @@
+BASH_PATH=~/.bash
+
 if [[ -f ~/.bashrc ]]; then
   . ~/.bashrc
 fi

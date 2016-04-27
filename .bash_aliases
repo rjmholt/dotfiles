@@ -37,6 +37,9 @@ esac
 # Make a new dir and go inside
 mcd () { mkdir -p "$1" && cd "$1"; }
 
+# Move a file to directory and go with it
+take () { mv "$1" "$2" && cd "$2"; }
+
 # Probably unwise in some way, but otherwise 'reboot' is just an
 # alias for an error message.
 alias reboot='sudo reboot'
@@ -49,14 +52,50 @@ case $OSTYPE in
   darwin*)
     alias vim='/usr/local/bin/vim' ;;
 esac
+alias vi="vim"
 alias cim='vim'
 alias ivm='vim'
 alias edit='vim'
-#alias emacs='vim'
+alias emacs='vim' # Mwahahaha
 #alias subl='vim'
 alias :q='echo "Not in vim..."'
 alias :wq='echo "Not in vim..."'
 alias :q!='echo "Not in vim..."'
+# A nice eclimd shortcut
+alias start_eclimd='~/Applications/eclipse/eclimd &>/dev/null &'
+
+# Use the Frege compiler 'natively'
+alias fregec='java -Xss1m -jar fregec.jar -d build'
+
+# Make work easy to get to
+GA=~/Documents/GeneralAssembly
+UNI=~/Documents/Uni/2016S1
+unicd () {
+  UNIPATH=$(readlink -f $UNI)
+  case $1 in
+    pli) cd $UNIPATH/Programming_Language_Implementation_COMP90045;;
+    smod) cd $UNIPATH/Software_Modelling_and_Design_SWEN30006;;
+    sra) cd $UNIPATH/Software_Requirements_Analysis_SWEN90009;;
+    da) cd $UNIPATH/Distributed_Algorithms_COMP90020;;
+    *)
+      echo "Error: Invalid argument"
+      echo "Valid subjects are:"
+      echo -e "\tsmod -> Software Modelling and Design"
+      echo -e "\tpli  -> Programming Language Implementation"
+      echo -e "\tsra  -> Software Requirements Analysis"
+      echo -e "\tda   -> Distributed Algorithms"
+  esac
+}
+
+# Define an intellij alias
+alias intellij='nohup ~/Applications/idea-IU-145.597.3/bin/idea.sh &>/dev/null &'
+
+# Define words nicely, and pronounce them first
+define () {
+  # Speak the word aloud and write its phonetic rendition
+  echo "Phoneme mnemonics: $(espeak -ven-uk-rp -s 120 "$1" 2> /dev/null)"
+  dict "$1" | less
+}
 
 # Search man page for $1 with $2 highlighted
 mans () {
@@ -202,5 +241,11 @@ case $OSTYPE in
 
     # Clean up LaunchServices to remove duplicates in the 'Open With' menu
     alias cleanupLS="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+    ;;
+esac
+
+case $OSTYPE in
+  *linux*)
+    alias netreset='sudo service network-manager restart'
     ;;
 esac
